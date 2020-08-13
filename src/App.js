@@ -1,11 +1,17 @@
 import React, {useState, useEffect} from 'react';
 import Form from './components/Form';
 import Cita from './components/Cita';
-
+import PropTypes from 'prop-types';
 function App() {
 
+  //obtener citas de localstorage
+  let citasIniciales = JSON.parse(localStorage.getItem('citas'))
+  if(!citasIniciales){
+    citasIniciales = [];
+  }
+
   //arreglo de citas
-  const [citas,guardarCitas] = useState([]);
+  const [citas,guardarCitas] = useState(citasIniciales);
   //funcion que tome las citas actuales y las nuevas
   const crearCita = (cita) =>{
     guardarCitas([
@@ -15,7 +21,12 @@ function App() {
   }
   //useEffect para realizar operaciones  cuando el storage cambia
   useEffect(()=>{
-    console.log('Listo')
+    let citasIniciales = JSON.parse(localStorage.getItem('citas'))
+    if(citasIniciales){
+      localStorage.setItem('citas',JSON.stringify(citas))
+    }else{
+      localStorage.setItem('citas',[])
+    }
   },[citas])
   //funcion que elimina las citas por su ID
   const eliminarCita = id =>{
@@ -50,6 +61,11 @@ function App() {
        
     </div>
   );
+}
+//para documentar los props y sus tipos, para evitar errores posteriores o 
+//de mantenimiento
+Form.protoTypes = {
+  crearCita: PropTypes.func.isRequired
 }
 
 export default App;
